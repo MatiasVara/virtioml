@@ -1,2 +1,2 @@
 # virtioml
-This repository contains tools to model devices that conform to virtio specification
+This repository contains VIRTIO Modeling Language, which is a set of tools to model devices that conform to virtio specification.
