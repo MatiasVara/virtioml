@@ -1,5 +1,5 @@
 # Virtioml
-[TOC]
+
 
 ## Introduction
 
@@ -33,7 +33,7 @@
 
 - For example, a virtqueue contains virtq_desc, virtq_availabe and virque_used
 
-![virtioqueue](C:\Users\Matias\Desktop\virtioml\plugins\org.virtio.model.virtioqueue\model\virtioqueue.jpg)
+![virtioqueue](./plugins/org.virtio.model.virtioqueue/model/virtioqueue.jpg)
 
 ## Header Generator
 
@@ -45,11 +45,11 @@
 
 It describes the different registers that a virtio device has. These methods are in charge to modify the Device Status field. The .ecl describes the correct order in which the device status must be modified. 
 
-![virtiodevice](C:\Users\Matias\Desktop\virtioml\plugins\org.virtio.model.virtiodevice\model\virtiodevice.jpg)
+![virtiodevice](./plugins/org.virtio.model.virtiodevice/model/virtiodevice.jpg)
 
 ## VirtIO Driver Model
 
-![virtiodriver](C:\Users\Matias\Desktop\virtioml\plugins\org.virtio.model.virtiodriver\model\virtiodriver.jpg)
+![virtiodriver](./plugins/org.virtio.model.virtiodriver/model/virtiodriver.jpg)
 
 ## Example: Virtio-balloon
 
