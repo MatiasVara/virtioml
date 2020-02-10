@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<virtiodevice:virtiodevice xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:virtiodevice="http://www.virtio.org/virtiodevice" Name="virtio-balloon" QueuesNr="2" Id="13">
+  <features Name="VIRTIO_BALLOON_F_STATS_VQ" Value="1"/>
+  <features Name="VIRTIO_BALLOON_F_MUST_TELL_HOST"/>
+  <features Name="VIRTIO_BALLOON_F_DEFLATE_ON_OOM " Value="2"/>
+  <virtqueues>
+    <virtq/>
+  </virtqueues>
+  <virtqueues Id="1">
+    <virtq/>
+  </virtqueues>
+</virtiodevice:virtiodevice>

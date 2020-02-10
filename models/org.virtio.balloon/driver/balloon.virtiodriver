@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<virtiodriver:virtiodriver xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:virtiodriver="http://www.virtio.org/virtiodriver" Name="virtio-balloon">
+  <avail/>
+  <avail/>
+  <desc/>
+  <desc/>
+  <used/>
+  <used/>
+  <device href="../device/balloon.virtiodevice#/"/>
+  <features Name="VIRTIO_BALLOON_F_MUST_TELL_HOST"/>
+</virtiodriver:virtiodriver>

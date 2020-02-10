@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Balloon
+Bundle-SymbolicName: org.virtio.balloon
+Bundle-Version: 1.0.0.qualifier
+Export-Package: org.virtio.balloon.execution
+Require-Bundle: org.virtio.model.virtiodevice;bundle-version="0.1.0",
+ org.virtio.model.virtiodriver;bundle-version="0.1.0",
+ org.virtio.model.virtioqueue;bundle-version="0.1.0"
+Import-Package: org.eclipse.emf.ecore.xmi.impl
