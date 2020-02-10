@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="virtiodevice" nsURI="http://www.virtio.org/virtiodevice" nsPrefix="virtiodevice">
+  <eClassifiers xsi:type="ecore:EClass" name="virtiodevice">
+    <eOperations name="SetAck"/>
+    <eOperations name="SetDriver"/>
+    <eOperations name="SetFeaturesOk"/>
+    <eOperations name="SetDriverOk"/>
+    <eOperations name="SetReset"/>
+    <eOperations name="SetVirqueDescQueue">
+      <eParameters name="Id" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eParameters name="virq_desc" eType="ecore:EClass ../../org.virtio.model.virtioqueue/model/virtioqueue.ecore#//virtq_desc"/>
+    </eOperations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="features" upperBound="-1"
+        eType="#//Feature" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="Name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="QueuesNr" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="DeviceStatus" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="virtqueues" upperBound="-1"
+        eType="#//VirtqueueDescriptor" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="Id" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="negociated_features" upperBound="-1"
+        eType="#//Feature"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="VirtqueueDescriptor">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="Id" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="virtq" lowerBound="1" eType="ecore:EClass ../../org.virtio.model.virtioqueue/model/virtioqueue.ecore#//virtq"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="DeviceStatusField">
+    <eLiterals name="ACKNOWLEDGE" value="1"/>
+    <eLiterals name="DRIVER" value="2"/>
+    <eLiterals name="FAILED" value="128"/>
+    <eLiterals name="FEATURES_OK" value="8"/>
+    <eLiterals name="DRIVER_OK" value="4"/>
+    <eLiterals name="DEVICE_NEEDS_RESET" value="64"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Feature">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="Name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="Value" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+  </eClassifiers>
+</ecore:EPackage>

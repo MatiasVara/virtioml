@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+
+<!--
+-->
+
+<plugin>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated virtiodevice -->
+      <package
+            uri="http://www.virtio.org/virtiodevice"
+            class="org.virtio.model.virtiodevice.VirtiodevicePackage"
+            genModel="model/virtiodevice.genmodel"/>
+   </extension>
+
+</plugin>

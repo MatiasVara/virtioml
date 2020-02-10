@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="virtiodriver" nsURI="http://www.virtio.org/virtiodriver" nsPrefix="virtiodriver">
+  <eClassifiers xsi:type="ecore:EClass" name="virtiodriver">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="avail" upperBound="-1"
+        eType="ecore:EClass ../../org.virtio.model.virtioqueue/model/virtioqueue.ecore#//virtq_avail"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="Name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="desc" upperBound="-1" eType="ecore:EClass ../../org.virtio.model.virtioqueue/model/virtioqueue.ecore#//virtq_desc"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="used" upperBound="-1" eType="ecore:EClass ../../org.virtio.model.virtioqueue/model/virtioqueue.ecore#//virtq_used"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="device" lowerBound="1"
+        eType="ecore:EClass ../../org.virtio.model.virtiodevice/model/virtiodevice.ecore#//virtiodevice"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="features" upperBound="-1"
+        eType="ecore:EClass ../../org.virtio.model.virtiodevice/model/virtiodevice.ecore#//Feature"
+        containment="true"/>
+  </eClassifiers>
+</ecore:EPackage>

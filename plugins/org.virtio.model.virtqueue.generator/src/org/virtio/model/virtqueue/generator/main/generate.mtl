@@ -1,0 +1,52 @@
+[comment encoding = UTF-8 /]
+[module generate('http://www.eclipse.org/emf/2002/Ecore')]
+
+[template public main(element : EPackage)]
+[comment @main/]
+[file ('virtio-queue.h', false, 'UTF-8')]
+  [for (enum: EEnum | element.eAllContents(EEnum)) separator('\n')]
+    [enum.generateEnum()/]
+  [/for]
+  [for (class: EClass | element.eAllContents(EClass)) separator('\n')]
+    [class.generateEClass()/]
+  [/for]
+[/file]
+[/template]
+
+[template public generateEClass(anEClass : EClass)]
+struct [anEClass.name/] {
+  [for (ref: EReference | anEClass.eReferences)]
+    [ref.generateEReference()/]
+  [/for]
+  [for (attr: EAttribute | anEClass.eAttributes)]
+    [attr.generateEAttribute()/]
+  [/for]
+}
+[/template]
+
+[template public generateEAttribute(anEAttribute : EAttribute) post(trim())]
+[anEAttribute.eAttributeType.name/] [anEAttribute.name/]; 
+[/template]
+
+[template public generateEReference(anEReference : EReference) post(trim())]
+[if (anEReference.containment)]
+[anEReference.eReferenceType.generateEReferenceTypeName()/] [anEReference.name/][if (anEReference.upperBound = -1)]['[]'/][/if];
+[else]
+[anEReference.eReferenceType.generateEReferenceTypeName()/] *[anEReference.name/];
+[/if]
+[/template]
+
+[template public generateEReferenceTypeName(anEReferenceType : EClass) post(trim())]
+[if (anEReferenceType.name.contains('DWord') or anEReferenceType.name.contains('Word') or anEReferenceType.name.contains('Byte') or anEReferenceType.name.contains('QWord'))]
+[anEReferenceType.name/]
+[else]
+['struct '.concat(anEReferenceType.name)/]
+[/if]
+[/template]
+
+[template public generateEnum(anEnum : EEnum)]
+[for (enumLit: EEnumLiteral | anEnum.eLiterals)]
+#define [enumLit.name/] [enumLit.value/]
+[/for]
+[/template]
+

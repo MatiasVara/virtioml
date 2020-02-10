@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel"
+    modelDirectory="/org.virtio.model.virtioqueue/src-gen" creationIcons="false"
+    editDirectory="/org.virtio.model.virtioqueue.edit/src-gen" editorDirectory="/org.virtio.model.virtioqueue.editor/src-gen"
+    modelPluginID="org.virtio.model.virtioqueue" modelName="Virtioqueue" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
+    codeFormatting="true" importerID="org.eclipse.emf.importer.ecore" complianceLevel="8.0"
+    copyrightFields="false" operationReflection="true" importOrganizing="true">
+  <foreignModel>virtioqueue.ecore</foreignModel>
+  <testsDirectory xsi:nil="true"/>
+  <genPackages prefix="Virtioqueue" basePackage="org.virtio.model" disposableProviderFactory="true"
+      ecorePackage="virtioqueue.ecore#/">
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="virtioqueue.ecore#//VRING_DESC">
+      <genEnumLiterals ecoreEnumLiteral="virtioqueue.ecore#//VRING_DESC/VRING_DESC_F_NEXT"/>
+      <genEnumLiterals ecoreEnumLiteral="virtioqueue.ecore#//VRING_DESC/VRING_DESC_F_WRITE"/>
+      <genEnumLiterals ecoreEnumLiteral="virtioqueue.ecore#//VRING_DESC/VRING_DESC_F_INDIRECT"/>
+    </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="virtioqueue.ecore#//VIRTQ_SUPPORT">
+      <genEnumLiterals ecoreEnumLiteral="virtioqueue.ecore#//VIRTQ_SUPPORT/VIRTQ_USED_F_NO_NOTIFY"/>
+      <genEnumLiterals ecoreEnumLiteral="virtioqueue.ecore#//VIRTQ_SUPPORT/VIRTQ_AVAIL_F_NO_INTERRUPT"/>
+      <genEnumLiterals ecoreEnumLiteral="virtioqueue.ecore#//VIRTQ_SUPPORT/VIRTIO_F_INDIRECT_DESC"/>
+      <genEnumLiterals ecoreEnumLiteral="virtioqueue.ecore#//VIRTQ_SUPPORT/VIRTIO_F_EVENT_IDX"/>
+      <genEnumLiterals ecoreEnumLiteral="virtioqueue.ecore#//VIRTQ_SUPPORT/VIRTIO_F_ANY_LAYOUT"/>
+    </genEnums>
+    <genClasses ecoreClass="virtioqueue.ecore#//virtq">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference virtioqueue.ecore#//virtq/avail"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference virtioqueue.ecore#//virtq/used"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference virtioqueue.ecore#//virtq/desc"/>
+    </genClasses>
+    <genClasses ecoreClass="virtioqueue.ecore#//virtq_avail">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference virtioqueue.ecore#//virtq_avail/flags"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference virtioqueue.ecore#//virtq_avail/idx"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference virtioqueue.ecore#//virtq_avail/ring"/>
+    </genClasses>
+    <genClasses ecoreClass="virtioqueue.ecore#//Word"/>
+    <genClasses ecoreClass="virtioqueue.ecore#//virtq_used_elem">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference virtioqueue.ecore#//virtq_used_elem/id"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference virtioqueue.ecore#//virtq_used_elem/len"/>
+    </genClasses>
+    <genClasses ecoreClass="virtioqueue.ecore#//DWord"/>
+    <genClasses ecoreClass="virtioqueue.ecore#//virtq_desc">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference virtioqueue.ecore#//virtq_desc/addr"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference virtioqueue.ecore#//virtq_desc/len"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference virtioqueue.ecore#//virtq_desc/flags"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference virtioqueue.ecore#//virtq_desc/next"/>
+    </genClasses>
+    <genClasses ecoreClass="virtioqueue.ecore#//QWord"/>
+    <genClasses ecoreClass="virtioqueue.ecore#//Byte"/>
+    <genClasses ecoreClass="virtioqueue.ecore#//virtq_used">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference virtioqueue.ecore#//virtq_used/flags"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference virtioqueue.ecore#//virtq_used/idx"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference virtioqueue.ecore#//virtq_used/ring"/>
+    </genClasses>
+  </genPackages>
+</genmodel:GenModel>
