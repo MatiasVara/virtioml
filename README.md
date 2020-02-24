@@ -53,6 +53,9 @@ The metaclasses **Word**, **DWord**, **QWord** and **Byte** must be manually def
 
 The virtio-device metamodel contains the concepts and relationships to describe virtio-devices. The **virtio-device** metaclass is the core of the description. It contains an **Id** that identifies the virtio-device. **QueuesNr** contains the number of queues the device exposes to the driver.  Figure 2 illustrates the metamodel.  The virtio-device metaclass also contains a set of methods that changes the value of the **DeviceStatus** register. These methods are invoked by the driver during the initialization.
 
+
+![virtiodevice](./plugins/org.virtio.model.virtiodevice/model/virtiodevice.jpg)
+
 Based on the VirtIO specification, these methods must be executed in a particular order to ensure the correct initialization of the device. For example, the following text is part of the steps that the driver has to follow to initialize a device: 
 
 ```
@@ -71,10 +74,12 @@ context virtiodevice
      Relation Precedes(self.Reset, self.Ack) 
 ```
 
-In this code, the **ackafterreset** is an invariant that specifies that the method **Reset()** must be invoked before the method **Ack()**. From this specification, it possible to generate c monitors to check that a driver correctly initializes a device. If the driver triggers these methods in a different order, an assert is executed. 
+In this code, the **ackafterreset** is an invariant that specifies that the method **Reset()** must be invoked before the method **Ack()**. From this specification, it should be possible to generate c monitors to check that a driver follow this specification. 
 
+**TODO**: This code could be used to generate two sort of codes:
 
-![virtiodevice](./plugins/org.virtio.model.virtiodevice/model/virtiodevice.jpg)
+1. Instrumentation code: This code should be placed in the drivers source code to generate the traces. This would capture when a method is invoked, e.g., Reset(). In CCSL, this represents the ticking of a clock.
+2. Validation code: This code should ensure that all constraints are satisfied. This could be built as a kernel module which periodically checks that all constraints are satisfied.    
 
 ## VirtIO Driver Metamodel
 
