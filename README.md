@@ -14,7 +14,7 @@ To represent the concept of virtqueue, we propose the use of a metamodel. The vi
 - generate documentation, e.g., Latex
 - generate headers for different languages, e.g., c, rust
 - generate source code sketch for drivers and devices in different languages, e.g., c, rust, vhdl, pascal
-- generate monitors that check if a device conforms to the specification
+- generate monitors that check if a device/driver conforms to the specification
 - describe formally the behavior of virtqueues to allow simulation and verification
 
 In the following, we first present the different metamodels. Then, at the end of this document, you can find how to try it and contribute to the project.  
@@ -47,7 +47,7 @@ struct virtq_desc {
 }
 ```
 
-The metaclasses **Word**, **DWord**, **QWord** and **Byte** must be manually defined. The generated file can be found at [header.h](https://github.com/MatiasVara/virtioml/blob/master/plugins/org.virtio.model.virtioqueue/headers/virtio-queue.h). The generation is implemented by using a model-to-text transformation in Acceleo. The transformation can be found in the following [link](https://github.com/MatiasVara/virtioml/blob/master/plugins/org.virtio.model.virtqueue.generator/src/org/virtio/model/virtqueue/generator/main/generate.mlt).
+The metaclasses **Word**, **DWord**, **QWord** and **Byte** must be manually defined. The generated file can be found at [header.h](https://github.com/MatiasVara/virtioml/blob/master/plugins/org.virtio.model.virtioqueue/headers/virtio-queue.h). The generation is implemented by using a model-to-text transformation in Acceleo. The transformation can be found in the following [link](https://github.com/MatiasVara/virtioml/blob/master/plugins/org.virtio.model.virtqueue.generator/src/org/virtio/model/virtqueue/generator/main/generate.mlt). This transformation can be adapted to generate the header for a different target language, e.g., Rust. 
 
 ## VirtIO Device Metamodel
 
@@ -56,31 +56,6 @@ The virtio-device metamodel contains the concepts and relationships to describe 
 
 ![virtiodevice](./plugins/org.virtio.model.virtiodevice/model/virtiodevice.jpg)
 
-Based on the VirtIO specification, these methods must be executed in a particular order to ensure the correct initialization of the device. For example, the following text is part of the steps that the driver has to follow to initialize a device: 
-
-```
-The driver MUST follow this sequence to initialize a device:
-
-1) Reset the device.
-2) Set the ACKNOWLEDGE status bit: the guest OS has noticed the device.
-...
-```
-
-This statement can be translated into a temporal relationship between the methods **Reset()** and **Ack()**. For example, if we encode this relationship by using the formal language CCSL, the statement is translated to the following code:
-
-```
-context virtiodevice
-   inv ackafterreset : 
-     Relation Precedes(self.Reset, self.Ack) 
-```
-
-In this code, the **ackafterreset** is an invariant that specifies that the method **Reset()** must be invoked before the method **Ack()**. From this specification, it should be possible to generate c monitors to check that a driver follow this specification. 
-
-**TODO**: This code could be used to generate two sort of codes:
-
-1. Instrumentation code: This code should be placed in the drivers source code to generate the traces. This would capture when a method is invoked, e.g., Reset(). In CCSL, this represents the ticking of a clock.
-2. Validation code: This code should ensure that all constraints are satisfied. This could be built as a kernel module which periodically checks that all constraints are satisfied.    
-
 ## VirtIO Driver Metamodel
 
 - The virtio-driver metamodel contains the concepts and the relationships to model virtio-drivers.
@@ -88,6 +63,42 @@ In this code, the **ackafterreset** is an invariant that specifies that the meth
 - This class is imported from the virtio-device metamodel.  
 
 ![virtiodriver](./plugins/org.virtio.model.virtiodriver/model/virtiodriver.jpg)
+
+## Validation of the Specification
+
+This section illustrates how to validate that a virtio-driver follows the specification. The methods defined in the virtio-device metamodel must be executed in a particular order to ensure the correct initialization of the device. For example, the driver has to do the following steps to initialize a device: 
+
+```
+The driver MUST follow this sequence to initialize a device:
+
+1) Reset the device.
+2) Set the ACKNOWLEDGE status bit: the guest OS has noticed the device.
+3) Set the DRIVER status bit: the guest OS knows how to drive the device.
+4) Read device feature bits, and write the subset of feature bits understood by the OS and driver to the device. During this step the driver MAY read (but MUST NOT write) the device-specific configuration fields to check that it can support the device before accepting it.
+5) Set the FEATURES_OK status bit. The driver MUST NOT accept new feature bits after this step.
+6) Re-read device status to ensure the FEATURES_OK bit is still set: otherwise, the device does not support our subset of features and the device is unusable.
+Perform device-specific setup, including discovery of virtqueues for the device, optional per-bus setup, reading and possibly writing the device’s virtio configuration space, and population of virtqueues.
+7) Set the DRIVER_OK status bit. At this point the device is “live”.
+```
+
+This statement can be translated into a temporal relationship between the methods **SetReset()** and **SetAck()**. For example, if we encode this relationship by using the formal language **CCSL** (see https://hal.inria.fr/inria-00384077v2 for further information about CCSL), the statement is translated to the following code:
+
+```
+context virtiodevice
+   inv ackafterreset : 
+     Relation Precedes(self.SetReset, self.SetAck) 
+```
+
+In this code, the **ackafterreset** is an invariant that specifies that the method **SetReset()** must be invoked before the method **SetsAck()**. 
+
+**TODO**: From this code, it is possible to generate C code to validate that a driver follows the specification during the initialization of a device. The following picture sketches how this works:
+
+![flow](./plugins/org.virtio.model.virtioqueue/model/flow.jpg "Generation of Validation from Constraints")
+
+The constrains in CCSL are used to generate two sort of codes:
+
+1. Validation code: This code contains all the temporal constraint and contains a list of methods that are allowed to be invoked in a step of execution. This is illustrated at (1) in the picture.  
+2. Instrumentation code: This code is placed into the driver source code to generate the traces. This captures when a method is invoked, e.g., SetReset() This is illustrated at (2) in the picture.  .
 
 ## Example: Virtio-balloon
 
