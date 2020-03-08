@@ -56,17 +56,9 @@ The virtio-device metamodel contains the concepts and relationships to describe 
 
 ![virtiodevice](./plugins/org.virtio.model.virtiodevice/model/virtiodevice.jpg)
 
-## VirtIO Driver Metamodel
-
-- The virtio-driver metamodel contains the concepts and the relationships to model virtio-drivers.
-- The root element is the virtiodriver metaclass. This metaclass refers to a virtio-device metaclass.
-- This class is imported from the virtio-device metamodel.  
-
-![virtiodriver](./plugins/org.virtio.model.virtiodriver/model/virtiodriver.jpg)
-
 ## Validation of the Specification
 
-This section illustrates how to validate that a virtio-driver follows the specification. The methods defined in the virtio-device metamodel must be executed in a particular order to ensure the correct initialization of the device. For example, the driver has to do the following steps to initialize a device: 
+This section illustrates how to validate that a virtio-driver follows the specification. The specification defines the step that a driver must to follow to initialize a device:
 
 ```
 The driver MUST follow this sequence to initialize a device:
@@ -77,11 +69,11 @@ The driver MUST follow this sequence to initialize a device:
 4) Read device feature bits, and write the subset of feature bits understood by the OS and driver to the device. During this step the driver MAY read (but MUST NOT write) the device-specific configuration fields to check that it can support the device before accepting it.
 5) Set the FEATURES_OK status bit. The driver MUST NOT accept new feature bits after this step.
 6) Re-read device status to ensure the FEATURES_OK bit is still set: otherwise, the device does not support our subset of features and the device is unusable.
-Perform device-specific setup, including discovery of virtqueues for the device, optional per-bus setup, reading and possibly writing the device’s virtio configuration space, and population of virtqueues.
-7) Set the DRIVER_OK status bit. At this point the device is “live”.
+7) Perform device-specific setup, including discovery of virtqueues for the device, optional per-bus setup, reading and possibly writing the device’s virtio configuration space, and population of virtqueues.
+8) Set the DRIVER_OK status bit. At this point the device is “live”.
 ```
 
-This statement can be translated into a temporal relationship between the methods **SetReset()** and **SetAck()**. For example, if we encode this relationship by using the formal language **CCSL** (see https://hal.inria.fr/inria-00384077v2 for further information about CCSL), the statement is translated to the following code:
+The steps 1) and 2) can be translated into a temporal relationship between the methods **SetReset()** and **SetAck()**. For example, if we encode this relationship by using the formal language **CCSL** (see https://hal.inria.fr/inria-00384077v2 for further information about CCSL), the statement is translated into the following code:
 
 ```
 context virtiodevice
@@ -89,26 +81,63 @@ context virtiodevice
      Relation Precedes(self.SetReset, self.SetAck) 
 ```
 
-In this code, the **ackafterreset** is an invariant that specifies that the method **SetReset()** must be invoked before the method **SetsAck()**. 
+In this code, the **ackafterreset** is an **invariant** that specifies that the method **SetReset()** must be invoked before the method **SetsAck()**. 
 
-**TODO**: From this code, it is possible to generate C code to validate that a driver follows the specification during the initialization of a device. The following picture sketches how this works:
+**TODO**: From this code, it is possible to generate C code to validate that a driver follows the specification. The following picture sketches how this works:
 
 ![flow](./plugins/org.virtio.model.virtioqueue/model/flow.jpg "Generation of Validation from Constraints")
 
 The constrains in CCSL are used to generate two sort of codes:
 
 1. Validation code: This code contains all the temporal constraint and contains a list of methods that are allowed to be invoked in a step of execution. This is illustrated at (1) in the picture.  
-2. Instrumentation code: This code is placed into the driver source code to generate the traces. This captures when a method is invoked, e.g., SetReset() This is illustrated at (2) in the picture.  .
+2. Instrumentation code: This code is placed into the driver source code to generate the traces. This captures when a method is invoked, e.g., SetReset() This is illustrated at (2) in the picture. 
 
 ## Example: Virtio-balloon
 
-- To illustrate the use of these metamodels, the repo includes the models of the virtio-balloon device and driver.
-- Both models are built independently. 
-- To explain how the virtio-ballon work and the used workflow.
-- one model of the device
-- one model of the driver
-- the device has references to virtqueue but the driver has to instantiates during initialization
-- the driver trigger the initialization procedure by setting the device status and then setting up the virtqueues.
+- We use the virtio-ballon driver to illustrate the procedure presented above.
+- In the case of the virtio-ballon, we want to ensure that the driver sets up the virtqueues before it sets the driver OK device status. 
+- This can be specified by the following invariant:
+```
+context virtiodevice
+   inv setvirqueuebeforedriverok : 
+     Relation Precedes(self.SetVirQueue, self.SetDriverOK) 
+```
+- From this invariant, the following code is generated:
+```c
+static int delta;
+
+static void SetVirtque(void){
+    delta++;
+}
+
+static void SetDriverOK(void){
+    delta--;
+    if (delta < 0){
+        printk(KERN_ALERT "Invariant SetVirqBeforeDriverOK has been violated\n");
+    }
+}
+```
+- TODO: to generate this code.
+- I set up the instrumentation code in the following lines of the virtio-ballon.c
+- line 526
+```c
+if (virtio_has_feature(vb->vdev, VIRTIO_BALLOON_F_FREE_PAGE_HINT))
+    vb->free_page_vq = vqs[VIRTIO_BALLOON_VQ_FREE_PAGE];
+SetVirtque(); // added here
+return 0;
+```
+- line 949
+```c
+virtio_device_ready(vdev);
+SetDriverOK(); // added here
+if (towards_target(vb))
+    virtballoon_changed(vdev);
+return 0;
+```
+
+You can check the **dmesg** to see if the invariant has been violated. If that is the case, you are going to get the following message: 
+
+`[    2.537668] Invariant SetVirqBeforeDriverOK has been violated`
 
 ## How to Try it
 
