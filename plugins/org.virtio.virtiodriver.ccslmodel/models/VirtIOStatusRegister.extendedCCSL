@@ -1,0 +1,58 @@
+ClockConstraintSystem VirtIOStatusRegister{
+	imports {
+		import "platform:/plugin/fr.inria.aoste.timesquare.ccslkernel.model/ccsllibrary/kernel.ccslLib" as lib0; 
+		import "platform:/plugin/fr.inria.aoste.timesquare.ccslkernel.model/ccsllibrary/CCSL.ccslLib" as lib1; 
+	}
+	
+	entryBlock main
+	
+	Block main{
+		Clock BaseTicks;
+		
+        // This must be generated from the trace
+        // Seq 1: correct execution
+        Sequence seqFromTraceA:IntegerSequence = (1);
+        Sequence seqFromTraceB:IntegerSequence = (2);
+        Sequence seqFromTraceC:IntegerSequence = (4);
+        
+        // Seq 2: Incorrect execution
+         //Sequence seqFromTraceA:IntegerSequence = (1);
+         //Sequence seqFromTraceB:IntegerSequence = (4);
+         //Sequence seqFromTraceC:IntegerSequence = (2);
+         
+         // Seq 3: Incorrect execution
+         // Sequence seqFromTraceA:IntegerSequence = (4);
+         // Sequence seqFromTraceB:IntegerSequence = (2);
+         // Sequence seqFromTraceC:IntegerSequence = (1);
+         
+         // Seq 4: Incorrect execution
+         // Sequence seqFromTraceA:IntegerSequence = (4);
+         // Sequence seqFromTraceB:IntegerSequence = (1);
+         // Sequence seqFromTraceC:IntegerSequence = (2);
+         
+         // Seq 5: Incorrect execution
+         // Sequence seqFromTraceA:IntegerSequence = (2);
+         // Sequence seqFromTraceB:IntegerSequence = (1);
+         // Sequence seqFromTraceC:IntegerSequence = (4);
+         
+         // Seq 6: Incorrect execution
+         // Sequence seqFromTraceA:IntegerSequence = (2);
+         // Sequence seqFromTraceB:IntegerSequence = (4);
+         // Sequence seqFromTraceC:IntegerSequence = (1);
+        
+        // virtio_dev_probe() -> VIRTIO_CONFIG_S_DRIVER (virtio_add_status(dev, VIRTIO_CONFIG_S_DRIVER);)
+        Expression Driver=FilterBy( FilterByClock -> BaseTicks ,FilterBySeq -> seqFromTraceA)
+        
+        // virtio_finalize_features() -> VIRTIO_CONFIG_S_FEATURES_OK
+        Expression FeaturesOK=FilterBy( FilterByClock -> BaseTicks ,FilterBySeq -> seqFromTraceB)
+        
+        // virtio_device_ready() -> VIRTIO_CONFIG_S_DRIVER_OK [inline]
+        Expression DriverOK=FilterBy( FilterByClock -> BaseTicks ,FilterBySeq -> seqFromTraceC)
+        
+        // This is translated from the VirtIO specification
+        assert Relation AckPrecedesFeatureOK[Precedes](   LeftClock -> Driver ,	RightClock -> FeaturesOK )
+        assert Relation FeatureOKPrecedes[Precedes](   LeftClock -> FeaturesOK ,	RightClock -> DriverOK )
+        
+	}
+}
+
