@@ -11,6 +11,8 @@ ClockConstraintSystem VirtIOStatusRegister{
 		
         // This must be generated from the trace
         // Seq 1: correct execution
+        // TODO: To parse the ouput of trace and generate this trace?
+        //
         Sequence seqFromTraceA:IntegerSequence = (1);
         Sequence seqFromTraceB:IntegerSequence = (2);
         Sequence seqFromTraceC:IntegerSequence = (4);
@@ -39,7 +41,12 @@ ClockConstraintSystem VirtIOStatusRegister{
          // Sequence seqFromTraceA:IntegerSequence = (2);
          // Sequence seqFromTraceB:IntegerSequence = (4);
          // Sequence seqFromTraceC:IntegerSequence = (1);
-        
+
+	 // Output from Trace
+	  // insmod-221   [000] .N..    99.795755: virtio_dev_probe: Driver
+	  // insmod-221   [000] .N..    99.796669: virtio_dev_probe: FeaturesOK
+	  // insmod-221   [000] ....    99.806811: virtballoon_probe: DriverOK
+
         // virtio_dev_probe() -> VIRTIO_CONFIG_S_DRIVER (virtio_add_status(dev, VIRTIO_CONFIG_S_DRIVER);)
         Expression Driver=FilterBy( FilterByClock -> BaseTicks ,FilterBySeq -> seqFromTraceA)
         
